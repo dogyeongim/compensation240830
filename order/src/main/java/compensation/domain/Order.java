@@ -52,14 +52,15 @@ public class Order {
         return orderRepository;
     }
 
-
+    //<<< Clean Arch / Port Method
     public static void updateStatus(OutOfStock outOfStock) {
-        repository().findById(outOfStock.getOrderId()).ifPresent(order ->{
+                repository().findById(outOfStock.getOrderId()).ifPresent(order ->{
             
             order.setStatus("OrderCancelled");
             repository().save(order);
         });
 
     }
-}
+    //>>> Clean Arch / Port Method
+
 //>>> DDD / Aggregate Root
