@@ -36,18 +36,30 @@ public class Order {
         OrderPlaced orderPlaced = new OrderPlaced(this);
         orderPlaced.publishAfterCommit();
 
-        OrderCancelled orderCancelled = new OrderCancelled(this);
-        orderCancelled.publishAfterCommit();
+
     }
 
     @PreRemove
-    public void onPreRemove() {}
+    public void onPreRemove() {
+        OrderCancelled orderCancelled = new OrderCancelled(this);
+        orderCancelled.publishAfterCommit();
+    }
 
     public static OrderRepository repository() {
         OrderRepository orderRepository = OrderApplication.applicationContext.getBean(
             OrderRepository.class
         );
         return orderRepository;
+    }
+
+
+    public static void updateStatus(OutOfStock outOfStock) {
+        repository().findById(outOfStock.getOrderId()).ifPresent(order ->{
+            
+            order.setStatus("OrderCancelled");
+            repository().save(order);
+        });
+
     }
 }
 //>>> DDD / Aggregate Root
